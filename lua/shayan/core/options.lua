@@ -1,53 +1,103 @@
 -- lua/shayan/options.lua
-
 local opt = vim.opt
 
-vim.opt.termguicolors = true
-
-vim.cmd("let g:netrw_liststyle = 3")
---vim.cmd.colorscheme("nightfox")
-
-vim.opt.relativenumber = true
-vim.opt.number = true
-vim.opt.cursorline = false
-vim.opt.wrap = false
-vim.opt.termguicolors = true
-
-
-vim.keymap.set("v", "<", "<gv")
-vim.keymap.set("v", ">", ">gv")
-
-vim.opt.spell = true
-vim.opt.spelllang = { "en_us" }
-
--- vim.opt.cmdheight = 0
-
--- tabs & indentation
-opt.tabstop = 2 -- 2 spaces for tabs (prettier default)
-opt.shiftwidth = 2 -- 2 spaces for indent width
-opt.expandtab = true -- expand tab to spaces
-opt.autoindent = true -- copy indent from current line when starting new one
-
--- search settings
-opt.ignorecase = true -- ignore case when searching
-opt.smartcase = true -- if you include mixed case in your search, assumes you want case-sensitive
-
-opt.cursorline = true
-
--- turn on termguicolors for tokyonight colorscheme to work
+-- ============================================================================
+-- DISPLAY & UI
+-- ============================================================================
 opt.termguicolors = true
-opt.background = "dark" -- colorschemes that can be light or dark will be made dark
-opt.signcolumn = "yes" -- show sign column so that text doesn't shift
+opt.number = true
+opt.relativenumber = true
+opt.cursorline = true
+opt.wrap = false
+opt.signcolumn = "yes"
+opt.cmdheight = 0
+opt.laststatus = 2
+opt.background = "dark"
 
--- backspace
-opt.backspace = "indent,eol,start" -- allow backspace on indent, end of line or insert mode start position
+-- Netrw file explorer
+vim.g.netrw_liststyle = 3
 
--- clipboard
-opt.clipboard:append("unnamedplus") -- use system clipboard as default register
+-- ============================================================================
+-- INDENTATION & FORMATTING
+-- ============================================================================
+opt.tabstop = 2
+opt.shiftwidth = 2
+opt.expandtab = true
+opt.autoindent = true
+opt.smartindent = true -- Add smart indenting
 
--- split windows
-opt.splitright = true -- split vertical window to the right
-opt.splitbelow = true -- split horizontal window to the bottom
+-- ============================================================================
+-- SEARCH & NAVIGATION
+-- ============================================================================
+opt.ignorecase = true
+opt.smartcase = true
+opt.hlsearch = true -- Highlight search results
+opt.incsearch = true -- Show search matches as you type
 
--- turn off swapfile
+-- ============================================================================
+-- EDITING BEHAVIOR
+-- ============================================================================
+opt.backspace = "indent,eol,start"
+opt.clipboard:append("unnamedplus")
 opt.swapfile = false
+opt.backup = false -- Disable backup files
+opt.undofile = true -- Enable persistent undo
+opt.undolevels = 1000
+opt.timeoutlen = 300 -- Faster key sequence timeout
+opt.updatetime = 250 -- Faster CursorHold events
+
+-- ============================================================================
+-- WINDOW SPLITS
+-- ============================================================================
+opt.splitright = true
+opt.splitbelow = true
+
+-- ============================================================================
+-- SPELL CHECKING
+-- ============================================================================
+opt.spell = true
+opt.spelllang = { "en_us" }
+
+-- ============================================================================
+-- PERFORMANCE
+-- ============================================================================
+opt.lazyredraw = true -- Don't redraw during macros
+opt.ttyfast = true -- Faster terminal connection
+
+-- ============================================================================
+-- KEYMAPS
+-- ============================================================================
+local keymap = vim.keymap.set
+
+-- Visual mode indenting (keep selection)
+keymap("v", "<", "<gv", { desc = "Indent left and keep selection" })
+keymap("v", ">", ">gv", { desc = "Indent right and keep selection" })
+
+-- Better navigation
+keymap("n", "j", "gj", { desc = "Move down by visual line" })
+keymap("n", "k", "gk", { desc = "Move up by visual line" })
+
+-- Clear search highlights
+keymap("n", "<Esc>", "<cmd>nohlsearch<CR>", { desc = "Clear search highlights" })
+
+-- Better window navigation
+keymap("n", "<C-h>", "<C-w>h", { desc = "Move to left window" })
+keymap("n", "<C-j>", "<C-w>j", { desc = "Move to bottom window" })
+keymap("n", "<C-k>", "<C-w>k", { desc = "Move to top window" })
+keymap("n", "<C-l>", "<C-w>l", { desc = "Move to right window" })
+
+-- ============================================================================
+-- AUTO PAIRS (Consider using a plugin like nvim-autopairs instead)
+-- ============================================================================
+local autopairs = {
+  { "(", ")" },
+  { "[", "]" },
+  { "{", "}" },
+  { '"', '"' },
+  { "'", "'" },
+  { "`", "`" },
+}
+
+for _, pair in ipairs(autopairs) do
+  keymap("i", pair[1], pair[1] .. pair[2] .. "<Left>", { desc = "Auto pair " .. pair[1] })
+end
